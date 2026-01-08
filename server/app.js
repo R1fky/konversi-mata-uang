@@ -40,27 +40,13 @@ app.post("/convert-mata-uang", async (req, res) => {
     if (!rates[from]) {
       return res.json({ message: "Mata Uang Tidak Valid" });
     }
-
     if (!rates[to]) {
       return res.json({ message: "Mata Uang Tidak Valid" });
     }
 
-    let currencyNow = 0;
-
-    //logika pertukaran
-    if (from == rates) {
-      currencyNow = amount;
-    } else {
-      currencyNow = amount / rates[from];
-    }
-
-    let resultKonvert = 0;
-
-    if (to == from) {
-      resultKonvert = amount;
-    } else {
-      resultKonvert = amount * rates[to];
-    }
+    //logika konversi
+    let amountinEur = from === "EUR" ? amount : amount / rates[from];
+    let resultKonvert = to === "EUR" ? amountinEur : amountinEur * rates[to];
 
     return res.json({
       message: "Pertukaran nilai Mata Uang Berhasil",
