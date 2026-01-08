@@ -1,8 +1,16 @@
 import express from "express";
 import fetch from "node-fetch";
+import cors from "cors";
 
 const app = express();
 const port = 3000;
+
+//menerima data body json
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+//cors
+app.use(cors());
 
 //try api
 app.get("/", (req, res) => {
@@ -10,34 +18,57 @@ app.get("/", (req, res) => {
     res.json({ message: "HIT API", status: 200 });
     console.log("API Berhasil di aktifkan");
   } catch (error) {
+    res.json({ message: "Failed API", status: 404 });
     console.log(error);
   }
 });
 
 //api konvert mata uang
-
 // link api : https://api.frankfurter.app/latest
-app.get("/convert-mata-uang", async (req, res) => {
+
+//logika konversi uang
+app.post("/convert-mata-uang", async (req, res) => {
   try {
-    //response data
-    const response = await fetch("https://api.frankfurter.app/latest");
-    if (!response.ok) {
-      return res.json({
-        message: "response data fetch Kurs tidak berhasil",
-      });
+    const { from, to, amount } = req.body;
+
+    //mengambil data
+    const responseData = await fetch("https://api.frankfurter.app/latest");
+    const resultData = await responseData.json();
+    // ambil rates  atau jenis uang
+    const rates = resultData.rates;
+
+    if (!rates[from]) {
+      return res.json({ message: "Mata Uang Tidak Valid" });
     }
 
-    // result data
-    const ApiData = await response.json();
+    if (!rates[to]) {
+      return res.json({ message: "Mata Uang Tidak Valid" });
+    }
+
+    let currencyNow = 0;
+
+    //logika pertukaran
+    if (from == rates) {
+      currencyNow = amount;
+    } else {
+      currencyNow = amount / rates[from];
+    }
+
+    let resultKonvert = 0;
+
+    if (to == from) {
+      resultKonvert = amount;
+    } else {
+      resultKonvert = amount * rates[to];
+    }
+
     return res.json({
-      message: "Berhasil Mengambil Data Kurs",
-      data: ApiData,
+      message: "Pertukaran nilai Mata Uang Berhasil",
+      data: resultKonvert,
+      satus: 200,
     });
   } catch (error) {
-    return res.json({
-      message: "API Konversi Tidak Berhasil",
-      status: 404,
-    });
+    console.log(error);
   }
 });
 

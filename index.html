@@ -58,25 +58,27 @@
   <body>
     <div class="container">
       <h2>Currency Converter</h2>
+      <form id="konversi_uang">
+        <select id="from">
+          <option selected>FROM</option>
+          <option value="USD">USD</option>
+          <option value="IDR">IDR</option>
+          <option value="EUR">EUR</option>
+        </select>
+        <label for="amount"
+          >Jumlah Uang
+          <input type="number" id="amount" placeholder="Jumlah uang" />
+        </label>
 
-      <select id="from">
-        <option value="USD">USD</option>
-        <option value="IDR">IDR</option>
-        <option value="EUR">EUR</option>
-      </select>
+        <select id="to">
+          <option selected>TO</option>
+          <option value="IDR">IDR</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+        </select>
 
-      <input type="number" id="amount" placeholder="Jumlah uang" />
-
-      <select id="to">
-        <option value="IDR">IDR</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-      </select>
-
-      <button type="submit">Convert</button>
-
-      <div id="output" class="result"></div>
-      <div id="error" class="error"></div>
+        <button type="submit">Convert</button>
+      </form>
     </div>
 
     <script src="index.js"></script>
